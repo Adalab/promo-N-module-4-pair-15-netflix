@@ -11,3 +11,17 @@ const serverPort = 4000;
 server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
+
+// get movies
+
+server.get('/movies' , (req, res)=>{
+ const response = {  
+  success: true,  
+  movies: [    
+    {      id: '1',      title: 'Gambita de dama',      gender: 'Drama',      image: 'https://via.placeholder.com/150'    },    
+    {      id: '2',      title: 'Friends',      gender: 'Comedia',      image: 'https://via.placeholder.com/150'    }  
+  ]
+}
+
+})
+

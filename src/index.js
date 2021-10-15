@@ -13,6 +13,18 @@ const serverPort = 4000;
 server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
+server.set('view engine', 'ejs');
+
+server.get('/movie/:movieId', (req, res)=>{
+  console.log(req.params.movieId);
+  const movieId= req.params.movieId;
+  
+  const foundMovie = movies.movies.find(movie => movie.id === movieId);
+  console.log(foundMovie);
+  //res.json(foundMovie);
+  res.render('movie' , foundMovie);
+  
+})
 
 const staticServerPath = './src/public-react'
 server.use(express.static(staticServerPath));

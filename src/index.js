@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const movies = require('./movies.json');
+
+const Database = require("better-sqlite3");
+const db =new Database('./src/database.db', {
+  verbose: console.log
+});
 
 
 // create and config server
@@ -19,7 +23,7 @@ server.get('/movie/:movieId', (req, res)=>{
   console.log(req.params.movieId);
   const movieId= req.params.movieId;
   
-  const foundMovie = movies.movies.find(movie => movie.id === movieId);
+  const foundMovie = movies.find(movie => movie.id === movieId);
   console.log(foundMovie);
   //res.json(foundMovie);
   res.render('movie' , foundMovie);
@@ -33,9 +37,14 @@ server.use(express.static(staticServerPath));
 // get movies
 
 server.get('/movies' , (req, res)=>{
- const response = movies;
-
-res.json(response);
+ 
+  const query= db.prepare('SELECT * FROM movies');
+  const movies= query.all();
+  const objectMovies = {
+    success: true,
+    movies: movies
+  }
+res.json(objectMovies);
 
 })
 

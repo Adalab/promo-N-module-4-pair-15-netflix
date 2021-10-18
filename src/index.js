@@ -48,3 +48,14 @@ res.json(objectMovies);
 
 })
 
+// users
+server.get('/users' , (req, res)=>{
+const query= db.prepare('SELECT * FROM users');
+const users= query.all();
+const objectUsers = {
+  success: true,
+  users: users
+}
+res.json(objectUsers);
+});
+

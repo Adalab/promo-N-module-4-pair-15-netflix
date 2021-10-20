@@ -1,7 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const movies = require('./movies.json');
-const { URLSearchParams } = require('url');
+
+const Database = require("better-sqlite3");
+const db =new Database('./src/database.db', {
+  verbose: console.log
+});
+
 
 // create and config server
 const server = express();
@@ -13,21 +17,45 @@ const serverPort = 4001;
 server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
+server.set('view engine', 'ejs');
 
-// endpoint movie id
+server.get('/movie/:movieId', (req, res)=>{
+  console.log(req.params.movieId);
+  const movieId= req.params.movieId;
+  
+  const foundMovie = movies.find(movie => movie.id === movieId);
+  console.log(foundMovie);
+  //res.json(foundMovie);
+  res.render('movie' , foundMovie);
+  
+})
 
-server.get('/movie/:movieId'),
-  (req, res) => {
-    console.log(urlParams);
-  };
-
-const staticServerPath = './src/public-react';
+const staticServerPath = './src/public-react'
 server.use(express.static(staticServerPath));
+
 
 // get movies
 
-server.get('/movies', (req, res) => {
-  const response = movies;
+server.get('/movies' , (req, res)=>{
+ 
+  const query= db.prepare('SELECT * FROM movies');
+  const movies= query.all();
+  const objectMovies = {
+    success: true,
+    movies: movies
+  }
+res.json(objectMovies);
 
-  res.json(response);
+})
+
+// users
+server.get('/users' , (req, res)=>{
+const query= db.prepare('SELECT * FROM users');
+const users= query.all();
+const objectUsers = {
+  success: true,
+  users: users
+}
+res.json(objectUsers);
 });
+
